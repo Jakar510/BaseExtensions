@@ -22,7 +22,7 @@ def getVersion(o):
     else: raise AttributeError("can't get version")
 
 
-with open(os.path.abspath(r"D:\WorkSpace\TkinterExtensions\requirements.txt"), "r") as f:
+with open(os.path.abspath('./requirements.txt'), "r") as f:
     install_requires = []
     for line in f.readlines():
         line = line.strip('\n')
@@ -36,7 +36,7 @@ print('install_requires', install_requires)
 
 setup(name=__name__,
       version=__version__,
-      packages=[__name__, f'{__name__}.Widgets', f'{__name__}.Misc', f'{__name__}.Events'],
+      packages=[__name__, f'{__name__}.Models'],
       url=__url__,
       license=__license__,
       author=__author__,

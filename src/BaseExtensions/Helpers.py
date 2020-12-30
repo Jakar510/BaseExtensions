@@ -1,8 +1,4 @@
-# ------------------------------------------------------------------------------
-#  Created by Tyler Stegmaier
-#  Copyright (c) 2020.
-#
-# ------------------------------------------------------------------------------
+
 from types import FunctionType, MethodType
 from typing import Union
 
