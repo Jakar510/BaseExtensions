@@ -182,18 +182,18 @@ class LoggingManager(object):
 
 
 
-if __name__ == '__main__':
-    from PythonDebugTools import *
-
-    class Test(object): pass
-    class Other(object): pass
-
-    m = LoggingManager.FromTypes(Test, Other, app_name='app', root_path='.')
-
-    PrettyPrint(m.paths.Test)
-    PrettyPrint(m.paths.Test_errors)
-
-    PrettyPrint(m.paths.Other)
-    PrettyPrint(m.paths.Other_errors)
-
-    PrettyPrint('m.paths.logs', m.paths.logs)
+# if __name__ == '__main__':
+#     from PythonDebugTools import *
+#
+#     class Test(object): pass
+#     class Other(object): pass
+#
+#     m = LoggingManager.FromTypes(Test, Other, app_name='app', root_path='.')
+#
+#     PrettyPrint(m.paths.Test)
+#     PrettyPrint(m.paths.Test_errors)
+#
+#     PrettyPrint(m.paths.Other)
+#     PrettyPrint(m.paths.Other_errors)
+#
+#     PrettyPrint('m.paths.logs', m.paths.logs)
