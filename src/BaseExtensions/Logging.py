@@ -144,9 +144,17 @@ class Console_Error(logging.StreamHandler):
 
 class LoggingManager(object):
     mapper: Dict[Type, str]
-    def __init__(self, paths: LogPaths, *, mapper: Dict[Type, str], fmt: Formats = Formats()):
+    @overload
+    def __init__(self, *types: Type, fmt: Formats = Formats()): ...
+    @overload
+    def __init__(self, mapper: Dict[Type, str], fmt: Formats = Formats()): ...
+
+    def __init__(self,  *types: Type, mapper: Dict[Type, str] = None, paths: LogPaths, fmt: Formats = Formats()):
         self.fmt = fmt
         self.paths = paths
+        if not isinstance(mapper, dict):
+            mapper = { item: item.__class__.__name__  for item in types }
+
         self.mapper = mapper
         logging.basicConfig(format=fmt.DETAILED, level=logging.DEBUG)
         self._root_logger = logging.getLogger()
