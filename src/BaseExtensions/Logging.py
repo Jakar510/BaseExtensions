@@ -142,6 +142,9 @@ class Console_Error(logging.StreamHandler):
         self.addFilter(ErrorFilter())
 
 
+
+class InstanceError(Exception): pass
+
 class LoggingManager(object):
     mapper: Dict[Type, str]
     def __init__(self, *types: Type, mapper: Dict[Type, str] = None, paths: LogPaths, fmt: Formats = Formats()):
@@ -159,12 +162,14 @@ class LoggingManager(object):
 
         logging.getLogger("PIL.PngImagePlugin").disabled = True
 
-    def CreateLogger(self, source, *, debug: bool) -> logging.Logger:
+    def CreateLogger(self, source, *, debug: bool = __debug__) -> logging.Logger:
         for key, value in self.mapper.items():
+            # if issubclass(source, key): raise InstanceError('source is not identified')
+
             if isinstance(source, key):
                 logger = self.app_logger.getChild(source.__class__.__name__)
-                logger.addHandler(Info_Handler(file=value, fmt=self.fmt))
-                logger.addHandler(Error_Handler(file=LogPaths.GetErrorName(value), fmt=self.fmt, path=self.paths))
+                logger.addHandler(Info_Handler(file=self.paths.__log_paths__[value], fmt=self.fmt))
+                logger.addHandler(Error_Handler(file=self.paths.__log_paths__[LogPaths.GetErrorName(value)], fmt=self.fmt, path=self.paths))
 
                 logger.addHandler(Console_Error(fmt=self.fmt))
                 logger.addHandler(Console_Debug(fmt=self.fmt))
@@ -173,27 +178,36 @@ class LoggingManager(object):
                 logger.setLevel(logging.DEBUG if debug else logging.ERROR)
                 return logger
 
+        else:
+            raise ValueError('source is not identified')
 
     @classmethod
-    def FromTypes(cls, *types, app_name: str, root_path: str):
+    def FromTypes(cls, *types: Type, app_name: str, root_path: str):
         mapper = { item: item.__name__ for item in types }
         return cls(mapper=mapper,
                    paths=LogPaths(*mapper.values(), app_name=app_name, root_path=root_path))
 
 
 
-# if __name__ == '__main__':
-#     from PythonDebugTools import *
-#
-#     class Test(object): pass
-#     class Other(object): pass
-#
-#     m = LoggingManager.FromTypes(Test, Other, app_name='app', root_path='.')
-#
-#     PrettyPrint(m.paths.Test)
-#     PrettyPrint(m.paths.Test_errors)
-#
-#     PrettyPrint(m.paths.Other)
-#     PrettyPrint(m.paths.Other_errors)
-#
-#     PrettyPrint('m.paths.logs', m.paths.logs)
+if __name__ == '__main__':
+    from PythonDebugTools import *
+
+    class Test(object): pass
+    class Other(object): pass
+
+    m = LoggingManager.FromTypes(Test, Other, app_name='app', root_path='.')
+
+    PrettyPrint(m.paths.Test)
+    PrettyPrint(m.paths.Test_errors)
+
+    PrettyPrint(m.paths.Other)
+    PrettyPrint(m.paths.Other_errors)
+
+    PrettyPrint('m.paths.logs', m.paths.logs)
+
+    Print(m.CreateLogger(Test(), debug=True))
+    Print(m.CreateLogger(Other(), debug=True))
+
+
+    try: m.CreateLogger(Other, debug=True)
+    except Exception as e: print_exception(e)
