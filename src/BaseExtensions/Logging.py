@@ -144,11 +144,11 @@ class Console_Error(logging.StreamHandler):
 
 class LoggingManager(object):
     mapper: Dict[Type, str]
-    def __init__(self,  *types: Type, mapper: Dict[Type, str] = None, paths: LogPaths, fmt: Formats = Formats()):
+    def __init__(self, *types: Type, mapper: Dict[Type, str] = None, paths: LogPaths, fmt: Formats = Formats()):
         self.fmt = fmt
         self.paths = paths
         if not isinstance(mapper, dict):
-            mapper = { item: item.__class__.__name__  for item in types }
+            mapper = { item: item.__name__ for item in set(types) }
 
         self.mapper = mapper
         logging.basicConfig(format=fmt.DETAILED, level=logging.DEBUG)
@@ -172,3 +172,28 @@ class LoggingManager(object):
                 logger.addFilter(PngImagePlugin_Filter())
                 logger.setLevel(logging.DEBUG if debug else logging.ERROR)
                 return logger
+
+
+    @classmethod
+    def FromTypes(cls, *types, app_name: str, root_path: str):
+        mapper = { item: item.__name__ for item in types }
+        return cls(mapper=mapper,
+                   paths=LogPaths(*mapper.values(), app_name=app_name, root_path=root_path))
+
+
+
+if __name__ == '__main__':
+    from PythonDebugTools import *
+
+    class Test(object): pass
+    class Other(object): pass
+
+    m = LoggingManager.FromTypes(Test, Other, app_name='app', root_path='.')
+
+    PrettyPrint(m.paths.Test)
+    PrettyPrint(m.paths.Test_errors)
+
+    PrettyPrint(m.paths.Other)
+    PrettyPrint(m.paths.Other_errors)
+
+    PrettyPrint('m.paths.logs', m.paths.logs)
