@@ -7,7 +7,7 @@ from PIL import Image
 
 
 __all__ = [
-        'ResizePhoto',
+        'ResizePhoto', 'IsImage'
         ]
 def ResizePhoto(image: Image.Image, *, WidthMax: int or float, HeightMax: int or float) -> Image:
     scalingFactor = min((WidthMax / image.width, HeightMax / image.height))
