@@ -2,6 +2,7 @@ import os
 from os import PathLike
 from os.path import *
 from pathlib import Path as _Path
+from typing import Union
 
 
 
@@ -54,6 +55,11 @@ class Path(PathLike):
     @property
     def Value(self): return self._path
 
+    @staticmethod
+    def CopyFile(_inPath: Union[str, 'Path'], _outPath: Union[str, 'Path'], open_as_binary: bool = False):
+        with open(_outPath, 'wb' if open_as_binary else 'w') as out:
+            with open(_inPath, 'rb' if open_as_binary else 'r') as _in:
+                out.write(_in.read())
 
 # _TFile = TypeVar("_TFile", BytesIO, StringIO, FileIO, TextIOWrapper)
 # class FileMode(str, Enum):
@@ -166,3 +172,4 @@ class Path(PathLike):
 #             self._fp = TextIOWrapper(*args, **kwargs)
 #
 #         return super().Open()
+
