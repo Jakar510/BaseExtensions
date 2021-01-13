@@ -113,6 +113,8 @@ class BaseModel(object):
     def FromJson(cls, string: Union[str, bytes, bytearray], **kwargs): return cls.Parse(loads(string, **kwargs))
     def ToJsonString(self) -> str: return dumps(self, indent=4, default=serialize)  # , cls=JsonEncoder)
 
+
+
 class BaseListModel(list, BaseModel, List[_T]):
     def __init__(self, source: Union[List, Iterable] = None):
         super().__init__(source or [])
@@ -146,13 +148,18 @@ class BaseListModel(list, BaseModel, List[_T]):
                 d[key] = value
         return d
 
-
     @classmethod
     def Parse(cls, d):
         if isinstance(d, list):
             return cls(d)
 
         throw(d, list)
+
+    @classmethod
+    def Create(cls, *args: _T):
+        return cls(args)
+
+
 
 class BaseSetModel(set, BaseModel, Set[_T]):
     def __str__(self): return self.ToString()
@@ -182,9 +189,15 @@ class BaseSetModel(set, BaseModel, Set[_T]):
     @classmethod
     def Parse(cls, d):
         if isinstance(d, list):
-            return cls(map(int, d))
+            return cls(d)
 
         throw(d, list)
+
+    @classmethod
+    def Create(cls, *args: _T):
+        return cls(args)
+
+
 
 class BaseDictModel(dict, BaseModel, Dict[_KT, _VT]):
     def __init__(self, source: dict = None, **kwargs):
@@ -222,13 +235,9 @@ class BaseDictModel(dict, BaseModel, Dict[_KT, _VT]):
 
         throw(d, dict)
 
+    @classmethod
+    def Create(cls, **kwargs: _VT):
+        return cls(kwargs)
 
-    # def Iter(self) -> Iterable[int]:
-    #     if 0 in self: return range(0, len(self))
-    #     return range(1, len(self) + 1)
 
-# class BaseDictNameIdItem(BaseDictModel, IdMixin[str], NameMixin):
-#     def split(self) -> Tuple[str, str]: return self.ID, self.Name
-#
-#     def test(self):
-#         _ = self.ID
+

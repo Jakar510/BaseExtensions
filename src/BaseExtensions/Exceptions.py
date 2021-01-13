@@ -1,0 +1,1 @@
+class ArgumentError(Exception): pass
