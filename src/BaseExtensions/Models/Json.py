@@ -238,6 +238,3 @@ class BaseDictModel(dict, BaseModel, Dict[_KT, _VT]):
     @classmethod
     def Create(cls, **kwargs: _VT):
         return cls(kwargs)
-
-
-
