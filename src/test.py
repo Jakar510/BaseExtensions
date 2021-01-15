@@ -2,6 +2,7 @@ import json
 import time
 
 from BaseExtensions.Models import *
+from src.BaseExtensions.Images import ImageObject
 
 
 
@@ -22,6 +23,18 @@ def Test():
 
     t = (1, 2)
     print(json.dumps(img_size))
+
+    with open('./BaseExtensions/ImageExtensions.py', 'w') as f:
+        f.write('from enum import Enum\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('\n')
+        f.write('class ImageExtensions(str, Enum):\n')
+
+        for item in ImageObject.Extensions():
+            f.write(f"\t{item.replace('.', '')} = '{item}'\n")
+
+
 
 
 if __name__ == '__main__':

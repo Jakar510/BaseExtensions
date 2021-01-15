@@ -208,9 +208,7 @@ class BaseDictModel(dict, BaseModel, Dict[_KT, _VT]):
     def __delitem__(self, item: Union[_KT, _VT]): return super().__delitem__(item)
     def __contains__(self, item: Union[_KT, _VT]): return super().__contains__(item)
     def __setitem__(self, key: _KT, value: _VT): return super().__setitem__(key, value)
-    def __getitem__(self, key: _KT) -> Optional[_VT]:
-        try: return super().__getitem__(key)
-        except KeyError: return None
+    def __getitem__(self, key: _KT) -> _VT: return super().__getitem__(key)
     def __iter__(self) -> Iterable[_VT]: return super().__iter__()
 
     def values(self) -> Iterable[_VT]: return super().values()
